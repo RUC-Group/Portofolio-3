@@ -2,6 +2,7 @@ import org.sqlite.Function.Window;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -9,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -107,16 +109,19 @@ public class Main extends Application {
             }
         });
         buttons.getChildren().add(updateButton);
+
         buttons.setSpacing(10);
-        bPane.setRight(buttons);
         textFields.setSpacing(20);
         
+        
         //add the two boxes to the root
-        root.getChildren().add(textFields);
+        
+        bPane.setCenter(textFields);
+        bPane.setRight(buttons);
         root.getChildren().add(bPane);
 
         // add the root to the scene
-        Scene scene = new Scene(root, 350, 200, Color.WHITE);
+        Scene scene = new Scene(root, 310, 175, Color.WHITE);
         stage.setTitle("Scedule searcher and modifyer");
         stage.setScene(scene);
         stage.show();
