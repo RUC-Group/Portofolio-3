@@ -1,8 +1,6 @@
-import org.sqlite.Function.Window;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -10,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -24,14 +21,12 @@ public class Main extends Application {
     TextField day;
     TextField room;
     TextField course;
-    
-    
-    int windowSize;
+    Stage calander;
     public static void main(String[] args){
         launch(args);
         
     }
-
+    
     public void start(Stage stage) throws Exception {
         Group root = new Group(); // the root is Group or Pane
         BorderPane bPane = new BorderPane();
@@ -42,6 +37,8 @@ public class Main extends Application {
         HBox dayHbox = new HBox();
         HBox professorHbox = new HBox();
         HBox roomHbox = new HBox();
+        String[] weekdays = {"Weekday/Timeslot","Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+        String[] detailsNames = {"Weekday:", "Timeslot:", "Course(expected students):", "Professor(s):", "Room(s),capacities:"};
         
         // Buttons
         VBox buttons = new VBox();
@@ -82,17 +79,92 @@ public class Main extends Application {
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                final Stage calander = new Stage();
-                calander.initModality(Modality.NONE);
-                calander.initOwner(stage);
-                
-                VBox calanderVbox = new VBox();
-                calanderVbox.getChildren().add(new Text("This will contain a calander"));
-                
-                Scene dialogScene = new Scene(calanderVbox, 300, 200);
-                calander.setScene(dialogScene);
-                calander.show();
-                System.out.println("Search");
+                if (calander == null || !calander.isShowing()) { // does not work....
+                    Stage calander = new Stage();
+                    calander.initModality(Modality.NONE);
+                    calander.initOwner(stage);
+                    HBox calanderHbox = new HBox();
+
+                    for (int i = 0; i < 6; i++) {
+                        VBox dayCalenderVBox = new VBox();
+                        dayCalenderVBox.getChildren().add(new Text(weekdays[i]));
+                        if (i==0) {
+                            dayCalenderVBox.getChildren().add(new Text("Morning: "));
+                            dayCalenderVBox.getChildren().add(new Text("Afternoon: "));
+                            dayCalenderVBox.setSpacing(35);
+                        }
+                        else{
+                            Button morningButton = new Button();
+                            morningButton.setText("idk, SMT fetched \n from SQLite");
+
+                            morningButton.setOnAction(new EventHandler<ActionEvent>() { // could just be .setOnAction(event ->{})
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    Stage details = new Stage();
+                                    details.initModality(Modality.NONE);
+                                    details.initOwner(stage);
+                                    HBox detailsHbox = new HBox();
+                                    VBox detailsnameVbox = new VBox();
+                                    VBox detailsValueVbox = new VBox();
+
+                                    for (int j = 0; j < detailsNames.length; j++) {
+                                        detailsnameVbox.getChildren().add(new Text(detailsNames[j]));
+                                        detailsValueVbox.getChildren().add(new Text("idk, smt from SQLite"));                         
+                                    }
+                                    detailsHbox.getChildren().addAll(detailsnameVbox, detailsValueVbox);
+
+                                    Scene detailsScene = new Scene(detailsHbox, 275, 100);
+                                    details.setTitle("Details");
+                                    details.setScene(detailsScene);
+                                    details.show();
+
+                                }
+                            });
+                            Button afternoonButton = new Button();
+                            afternoonButton.setText("idk, SMT fetched \n from SQLite");
+
+                            afternoonButton.setOnAction(new EventHandler<ActionEvent>() { // could just be .setOnAction(event ->{})
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    Stage details = new Stage();
+                                    details.initModality(Modality.NONE);
+                                    details.initOwner(stage);
+                                    HBox detailsHbox = new HBox();
+                                    VBox detailsnameVbox = new VBox();
+                                    VBox detailsValueVbox = new VBox();
+
+                                    for (int j = 0; j < detailsNames.length; j++) {
+                                        detailsnameVbox.getChildren().add(new Text(detailsNames[j]));
+                                        detailsValueVbox.getChildren().add(new Text("idk, smt from SQLite"));                         
+                                    }
+                                    detailsHbox.getChildren().addAll(detailsnameVbox, detailsValueVbox);
+
+                                    Scene detailsScene = new Scene(detailsHbox, 275, 100);
+                                    details.setTitle("Details");
+                                    details.setScene(detailsScene);
+                                    details.show();
+
+                                }
+                            });
+                            dayCalenderVBox.getChildren().add(morningButton);
+                            dayCalenderVBox.getChildren().add(afternoonButton);
+                            dayCalenderVBox.setSpacing(20);
+                        }
+
+                        calanderHbox.getChildren().add(dayCalenderVBox);
+                        calanderHbox.setSpacing(10);
+                    }
+                    
+                    
+                    Scene calanderScene = new Scene(calanderHbox, 700, 150);
+                    calander.setTitle("calendar");
+                    calander.setScene(calanderScene);
+                    calander.show();
+                    System.out.println("Search");
+                } else {
+                    calander.toFront();
+                }
+              
             }
         });
         buttons.getChildren().add(searchButton);
