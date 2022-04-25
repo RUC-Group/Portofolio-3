@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -29,6 +30,7 @@ public class Main extends Application {
     String professorTextValue;
     String roomTextValue;
     Stage calander;
+    Model model;
     public static void main(String[] args){
         launch(args);
         
@@ -37,6 +39,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Group root = new Group(); // the root is Group or Pane
         BorderPane bPane = new BorderPane();
+
+        model = new Model();
         
         //text fields for inputting
         VBox textFields = new VBox();
@@ -111,7 +115,19 @@ public class Main extends Application {
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (calander == null || !calander.isShowing()) { // does not work....
+                Stage calender = new Stage();
+                TextArea textArea = new TextArea();
+                calender.initModality(Modality.NONE);
+                calender.initOwner(stage);
+                textArea.setText("");
+                Scene calenderScene = new Scene(textArea, 500, 50);
+                calender.setTitle("Calender");
+                calender.setScene(calenderScene);
+                calender.show();
+            }
+        });
+            
+                /*if (calander == null || !calander.isShowing()) { // does not work....
                     dayTextValue = day.getText();
                     courseTextValue = course.getText();
                     professorTextValue = professor.getText();
@@ -196,7 +212,7 @@ public class Main extends Application {
                     
                     
                     Scene calanderScene = new Scene(calanderHbox, 700, 150);
-                    calander.setTitle("calendar");
+                    calander.setTitle("Calendar");
                     calander.setScene(calanderScene);
                     calander.show();
                     System.out.println("Search");
@@ -207,7 +223,7 @@ public class Main extends Application {
                 }
               
             }
-        });
+        });*/ 
         buttons.getChildren().add(searchButton);
         
         //update button
@@ -256,8 +272,10 @@ public class Main extends Application {
 
         // add the root to the scene
         Scene scene = new Scene(root, 480, 210, Color.WHITE);
-        stage.setTitle("Scedule searcher and modifyer");
+        stage.setTitle("Scedule searcher and modifier");
         stage.setScene(scene);
         stage.show();
     }
 }
+
+
