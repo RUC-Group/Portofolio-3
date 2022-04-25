@@ -18,12 +18,16 @@ import javafx.scene.text.Text;
 
 
 public class Main extends Application {
-    Button updateButton;
+    Button addButton;
     Button searchButton;
     TextField professor;
     TextField day;
     TextField room;
     TextField course;
+    String dayTextValue;
+    String courseTextValue;
+    String professorTextValue;
+    String roomTextValue;
     Stage calander;
     public static void main(String[] args){
         launch(args);
@@ -40,6 +44,7 @@ public class Main extends Application {
         HBox dayHbox = new HBox();
         HBox professorHbox = new HBox();
         HBox roomHbox = new HBox();
+        
         String[] weekdays = {" Weekday/Timeslot"," Monday", " Tuesday", " Wednesday", " Thursday", " Friday"};
         String[] detailsNames = {" Weekday:", " Timeslot:", " Course(expected students):", " Professor(s):", " Room(s),capacities:"};
         
@@ -48,13 +53,16 @@ public class Main extends Application {
         
         // course text field
         course = new TextField();
-        courseHbox.getChildren().addAll(new Text("course: "), course);
+        courseHbox.getChildren().addAll(new Text("Course: "), course);
         courseHbox.setSpacing(14);
+        // expected amount of studens combobox
         ComboBox ExAmountStud = new ComboBox();
+        ExAmountStud.setPromptText("Exptected amount");
         for (int i = 0; i < 60; i++) {
             ExAmountStud.getItems().add(i + 1);
         }
-        textFields.getChildren().addAll(courseHbox, ExAmountStud);
+        courseHbox.getChildren().addAll(ExAmountStud);
+        textFields.getChildren().addAll(courseHbox);
 
         //day text field
         day = new TextField();
@@ -66,7 +74,9 @@ public class Main extends Application {
         
         // radio checkbox for Morning/Afternoon Courses
         HBox toggleTime = new HBox();
-        toggleTime.getChildren().addAll(new RadioButton(" Morning"),new RadioButton(" Afternoon"));
+        RadioButton morning = new RadioButton(" Morning");
+        RadioButton afternoon = new RadioButton(" Afternoon");
+        toggleTime.getChildren().addAll(morning,afternoon);
         toggleTime.setSpacing(10);
         textFields.getChildren().add(toggleTime);
         
@@ -79,9 +89,16 @@ public class Main extends Application {
 
         //room text field
         room = new TextField();
-        roomHbox.getChildren().addAll(new Text("room: "), room);
+        roomHbox.getChildren().addAll(new Text("Room: "), room);
         roomHbox.setSpacing(20);
-        textFields.getChildren().add(roomHbox);
+        //max amount of students allowed in a room.
+        ComboBox maxStuds = new ComboBox();
+        maxStuds.setPromptText("Max capacity");
+        for (int i = 0; i < 100; i++) {
+            maxStuds.getItems().add(i+1);
+        }
+        roomHbox.getChildren().addAll(maxStuds);
+        textFields.getChildren().addAll(roomHbox);
         
         
         
@@ -95,10 +112,10 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 if (calander == null || !calander.isShowing()) { // does not work....
-                    String dayTextValue = day.getText();
-                    String courseTextValue = course.getText();
-                    String professorTextValue = professor.getText();
-                    String roomTextValue = room.getText();
+                    dayTextValue = day.getText();
+                    courseTextValue = course.getText();
+                    professorTextValue = professor.getText();
+                    roomTextValue = room.getText();
 
                     Stage calander = new Stage();
                     calander.initModality(Modality.NONE);
@@ -183,6 +200,8 @@ public class Main extends Application {
                     calander.setScene(calanderScene);
                     calander.show();
                     System.out.println("Search");
+                    System.out.println(morning.isSelected());
+                    System.out.println(afternoon.isSelected());
                 } else {
                     calander.toFront();
                 }
@@ -192,23 +211,36 @@ public class Main extends Application {
         buttons.getChildren().add(searchButton);
         
         //update button
-        updateButton = new Button();
-        updateButton.setText("Add");
-        updateButton.setPrefHeight(72);
-        updateButton.setPrefWidth(100);
-        updateButton.setTranslateX(5);
-        updateButton.setOnAction(new EventHandler<ActionEvent>() {
+        addButton = new Button();
+        addButton.setText("Add");
+        addButton.setPrefHeight(72);
+        addButton.setPrefWidth(100);
+        addButton.setTranslateX(5);
+        addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String dayTextValue = day.getText();
-                String courseTextValue = course.getText();
-                String professorTextValue = professor.getText();
-                String roomTextValue = room.getText();
-                // send to console ()
-                System.out.println();
+                dayTextValue = day.getText();
+                courseTextValue = course.getText();
+                professorTextValue = professor.getText();
+                roomTextValue = room.getText();
+                
+                if (dayTextValue == null || courseTextValue == null || professorTextValue == null || roomTextValue == null || !(morning.isSelected() ||  afternoon.isSelected())) {
+                    Stage error = new Stage();
+                    error.initModality(Modality.NONE);
+                    error.initOwner(stage);
+                    HBox errorbox = new HBox(new Text("Error! \n You need to fill in all the fields (Room, Course, Day, Professor and (morning or afternoon))"));
+                    Scene errorScene = new Scene(errorbox, 500, 50);
+                    error.setTitle("Error!");
+                    error.setScene(errorScene);
+                    error.show();
+
+                } else {
+                    System.out.println("It works :)");
+
+                }
             }
         });
-        buttons.getChildren().add(updateButton);
+        buttons.getChildren().add(addButton);
 
         buttons.setSpacing(57);
         textFields.setSpacing(20);
@@ -223,7 +255,7 @@ public class Main extends Application {
         
 
         // add the root to the scene
-        Scene scene = new Scene(root, 320, 210, Color.WHITE);
+        Scene scene = new Scene(root, 480, 210, Color.WHITE);
         stage.setTitle("Scedule searcher and modifyer");
         stage.setScene(scene);
         stage.show();
