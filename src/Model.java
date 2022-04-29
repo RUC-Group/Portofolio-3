@@ -11,7 +11,7 @@ public class Model {
         db.cmd("CREATE TABLE if not exists Course" + "(name TEXT NOT NULL PRIMARY KEY, expectedAmount INTEGER NOT NULL);");
         db.cmd("CREATE TABLE if not exists Lecturer" + "(name TEXT NOT NULL PRIMARY KEY);");
         db.cmd("CREATE TABLE if not exists Room" + "(number TEXT NOT NULL PRIMARY KEY, maxCapacity INTEGER NOT NULL);");
-        db.cmd("CREATE TABLE if not exists Schedule" + "(courseName TEXT NOT NULL ,lecturer TEXT NOT NULL ,room TEXT NOT NULL ,day INTEGER NOT NULL CHECK (day >=0 AND day <=5) ,timeOfDay TEXT NOT NULL CHECK (timeOfDay IN ('Morning','Afternoon')),FOREIGN KEY (courseName) REFERENCES Course(name),FOREIGN KEY (lecturer) REFERENCES Lecturer(name),FOREIGN KEY (room) REFERENCES Room(number), PRIMARY KEY(courseName,lecturer,room,day,timeOfDay));");
+        db.cmd("CREATE TABLE if not exists Schedule" + "(courseName TEXT NOT NULL ,lecturer TEXT NOT NULL ,room TEXT NOT NULL ,day INTEGER NOT NULL CHECK (day >0 AND day <=5) ,timeOfDay TEXT NOT NULL CHECK (timeOfDay IN ('Morning','Afternoon')),FOREIGN KEY (courseName) REFERENCES Course(name),FOREIGN KEY (lecturer) REFERENCES Lecturer(name),FOREIGN KEY (room) REFERENCES Room(number), PRIMARY KEY(courseName,lecturer,room,day,timeOfDay));");
         
         //create Triggers
         db.cmd("CREATE TRIGGER if not exists teacherTimeslot BEFORE INSERT ON Schedule BEGIN SELECT CASE WHEN NEW.lecturer IN(SELECT Schedule.lecturer FROM Schedule WHERE Schedule.day =NEW.day AND Schedule.timeOfDay = NEW.timeOfDay AND Schedule.courseName < NEW.courseName) THEN RAISE (ABORT, 'Teacher already in that time timeOfDay') END; END;");
